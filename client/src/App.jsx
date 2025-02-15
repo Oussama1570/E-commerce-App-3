@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom'; 
-import AuthLayout from "./components/auth/layout";
+import AuthLayout from './components/auth/layout.jsx';
 import AuthLogin from './pages/auth/login';
 import AuthRegister from './pages/auth/register';
 import AdminProducts from './pages/admin-view/products';
@@ -45,7 +45,7 @@ function App() {
         </Route>
 
         {/* Admin Routes */}
-        <Route path="/admin" element={<CheckAuth><AuthLayout/></CheckAuth>}>
+        <Route path="/admin" element={<CheckAuth><AdminLayout/></CheckAuth>}>
           <Route path="dashboard" element={<Admindashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<Adminorders />} />

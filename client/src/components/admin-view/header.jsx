@@ -1,19 +1,21 @@
-import { Button } from "@/components/ui/button"; // Or your button component
+import { Button } from "@/components/ui/button"; 
+import { Menu } from "lucide-react"; // Importing an icon for the menu button
 
-
-function AdminHeader() {
+function AdminHeader({ setOpen }) {
   return (
-    <header className="flex items-center justify-between p-4 border-b"> {/* Added some basic styling */}
-      <div className="flex items-center"> {/* Grouped icon and title */}
-        <Button variant="ghost" className="lg:hidden"> {/* Only show on smaller screens */}
-          
-          <span className="sr-only">Toggle Menu</span> {/* For accessibility */}
+    <header className="flex items-center justify-between p-4 border-b">
+      {/* Sidebar Toggle Button */}
+      <div className="flex items-center">
+        <Button variant="ghost" className="lg:hidden" onClick={() => setOpen(prev => !prev)}>
+          <Menu size={24} />
+          <span className="sr-only">Toggle Menu</span>
         </Button>
-        <span className="text-xl font-bold ml-4">Admin Dashboard</span> {/* Added a title */}
+        <span className="text-xl font-bold ml-4">Admin Dashboard</span>
       </div>
-      <div className="flex items-center gap-2"> {/* Added gap for spacing */}
-        <Button className="inline-flex gap-2"> {/* Added gap for icon and text */}
-         
+
+      {/* Logout Button */}
+      <div className="flex items-center gap-2">
+        <Button className="inline-flex gap-2">
           Logout
         </Button>
       </div>
