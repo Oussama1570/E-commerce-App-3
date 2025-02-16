@@ -1,7 +1,17 @@
 import { Button } from "@/components/ui/button"; 
-import { Menu } from "lucide-react"; // Importing an icon for the menu button
+import { LogOut, Menu } from "lucide-react"; // Importing an icon for the menu button
+import { useDispatch } from "react-redux";
+import { logoutUser } from "@/store/auth-slice";
 
 function AdminHeader({ setOpen }) {
+
+  const dispatch = useDispatch();
+  function handleLogout() {
+
+    dispatch(logoutUser());
+  }
+
+
   return (
     <header className="flex items-center justify-between p-4 border-b">
       {/* Sidebar Toggle Button */}
@@ -14,8 +24,12 @@ function AdminHeader({ setOpen }) {
       </div>
 
       {/* Logout Button */}
-      <div className="flex items-center gap-2">
-        <Button className="inline-flex gap-2">
+      <div className="flex flex-1 justify-end">
+        <Button
+          onClick={handleLogout}
+          className="inline-flex gap-2 items-center rounded-md px-4 py-2 text-sm font-medium shadow"
+        >
+          <LogOut/>
           Logout
         </Button>
       </div>

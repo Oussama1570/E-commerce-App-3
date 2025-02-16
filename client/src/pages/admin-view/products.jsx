@@ -1,11 +1,9 @@
 import CommonForm from "@/components/common/form";
 import { Button } from "@/components/ui/button";
-import { SideNav, SideNavItem, SideNavItems } from "@carbon/react"; 
-import { useToast } from "@/components/ui/use-toast";
 import { addProductFormElements } from "@/config";
-
-import { Fragment, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { SideNav, SideNavItems, SideNavLink } from "@carbon/react";
+import { Fragment, useState } from "react";
+import ProductImageUpload from "./image-upload.jsx"; // Fix import
 
 const initialFormData = {
   image: null,
@@ -15,138 +13,57 @@ const initialFormData = {
   brand: "",
   price: "",
   salePrice: "",
-  totalStock: "",
-  averageReview: 0,
 };
 
-function AdminProducts() {
-  const [openCreateProductsDialog, setOpenCreateProductsDialog] =
-    useState(false);
+const AdminProducts = () => {
+  const [openCreateProductsDialog, setOpenCreateProductsDialog] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const [imageFile, setImageFile] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
-  const [imageLoadingState, setImageLoadingState] = useState(false);
-  const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [imageLoadingState, setImageLoadingState] = useState(false); // Added missing state
 
-  const { productList } = useSelector((state) => state.adminProducts);
-  const dispatch = useDispatch();
-  const { toast } = useToast();
-
-  function onSubmit(event) {
-    event.preventDefault();
-
-    currentEditedId !== null
-      ? dispatch(
-          editProduct({
-            id: currentEditedId,
-            formData,
-          })
-        ).then((data) => {
-          console.log(data, "edit");
-
-          if (data?.payload?.success) {
-            dispatch(fetchAllProducts());
-            setFormData(initialFormData);
-            setOpenCreateProductsDialog(false);
-            setCurrentEditedId(null);
-          }
-        })
-      : dispatch(
-          addNewProduct({
-            ...formData,
-            image: uploadedImageUrl,
-          })
-        ).then((data) => {
-          if (data?.payload?.success) {
-            dispatch(fetchAllProducts());
-            setOpenCreateProductsDialog(false);
-            setImageFile(null);
-            setFormData(initialFormData);
-            toast({
-              title: "Product add successfully",
-            });
-          }
-        });
-  }
-
-  function handleDelete(getCurrentProductId) {
-    dispatch(deleteProduct(getCurrentProductId)).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchAllProducts());
-      }
-    });
-  }
-
-  function isFormValid() {
-    return Object.keys(formData)
-      .filter((currentKey) => currentKey !== "averageReview")
-      .map((key) => formData[key] !== "")
-      .every((item) => item);
-  }
-
-  useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, [dispatch]);
-
-  console.log(formData, "productList");
+  function onSubmit() {}
 
   return (
     <Fragment>
-      <div className="mb-5 w-full flex justify-end">
-        <Button onClick={() => setOpenCreateProductsDialog(true)}>
-          Add New Product
-        </Button>
+      <div className="mb-5 flex justify-end">
+        <Button onClick={() => setOpenCreateProductsDialog(true)}>Add New Product</Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {productList && productList.length > 0
-          ? productList.map((productItem) => (
-              <AdminProductTile
-                setFormData={setFormData}
-                setOpenCreateProductsDialog={setOpenCreateProductsDialog}
-                setCurrentEditedId={setCurrentEditedId}
-                product={productItem}
-                handleDelete={handleDelete}
+
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4"></div>
+
+      {openCreateProductsDialog && (
+        <SideNav className="fixed right-0 top-0 h-full w-80 bg-white shadow-lg">
+          <SideNavItems>
+            <SideNavLink className="font-bold text-lg" href="#">
+              Add New Product
+            </SideNavLink>
+
+            <div className="p-4 overflow-auto">
+              <ProductImageUpload
+                imageFile={imageFile}
+                setImageFile={setImageFile}
+                uploadedImageUrl={uploadedImageUrl}
+                setUploadedImageUrl={setUploadedImageUrl}
+                imageLoadingState={imageLoadingState}
+                setImageLoadingState={setImageLoadingState}
               />
-            ))
-          : null}
-      </div>
-      <Nav
-        open={openCreateProductsDialog}
-        onOpenChange={() => {
-          setOpenCreateProductsDialog(false);
-          setCurrentEditedId(null);
-          setFormData(initialFormData);
-        }}
-      >
-        <NavContent side="right" className="overflow-auto">
-          <NavHeader>
-            <NavTitle>
-              {currentEditedId !== null ? "Edit Product" : "Add New Product"}
-            </NavTitle>
-          </NavHeader>
-          <ProductImageUpload
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            uploadedImageUrl={uploadedImageUrl}
-            setUploadedImageUrl={setUploadedImageUrl}
-            setImageLoadingState={setImageLoadingState}
-            imageLoadingState={imageLoadingState}
-            isEditMode={currentEditedId !== null}
-          />
-          <div className="py-6">
-            <CommonForm
-              onSubmit={onSubmit}
-              formData={formData}
-              setFormData={setFormData}
-              buttonText={currentEditedId !== null ? "Edit" : "Add"}
-              formControls={addProductFormElements}
-              isBtnDisabled={!isFormValid()}
-            />
-          </div>
-        </NavContent>
-      </Nav>
+
+              <div className="py-6">
+                <CommonForm
+                  onSubmit={onSubmit}
+                  formData={formData}
+                  setFormData={setFormData}
+                  buttonText="Add"
+                  formControls={addProductFormElements}
+                />
+              </div>
+            </div>
+          </SideNavItems>
+        </SideNav>
+      )}
     </Fragment>
   );
-}
+};
 
 export default AdminProducts;
