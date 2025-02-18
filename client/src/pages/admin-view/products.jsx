@@ -1,5 +1,5 @@
 import { SideNav, SideNavItems, SideNavLink } from "@carbon/react";
-import ProductImageUpload from "../admin-view/image-upload.jsx";
+import ProductImageUpload from "../../components/admin-view/image-upload.jsx";
 import AdminProductTile from "../../components/admin-view/product-title.jsx";
 import CommonForm from "../../components/common/form.jsx";
 import { Button } from "../../components/ui/button.jsx";
